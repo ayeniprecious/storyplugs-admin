@@ -67,12 +67,19 @@ export async function updateStory(id: string, formData: FormData) {
   return { error: null };
 }
 
-export async function setStoryStatus(id: string, status: ContentStatus) {
+export async function setStoryStatus(id: string, status: ContentStatus, scheduledFor?: string) {
   const { admin } = await requireAdmin();
   const supabase = await createClient();
   const updates: Record<string, unknown> = { status };
   if (status === "published") {
-    updates.published_at = new Date().toISOString();
+    // A future scheduledFor keeps the story hidden from public reads until
+    // then (enforced by RLS on stories.published_at), while still marking
+    // it as published in the admin's own view.
+    const scheduledDate = scheduledFor ? new Date(scheduledFor) : null;
+    updates.published_at =
+      scheduledDate && scheduledDate.getTime() > Date.now()
+        ? scheduledDate.toISOString()
+        : new Date().toISOString();
     updates.approved_by_admin_id = admin.id;
   }
   if (status === "approved") {
@@ -84,6 +91,10 @@ export async function setStoryStatus(id: string, status: ContentStatus) {
   revalidatePath("/stories");
   revalidatePath(`/stories/${id}`);
   return { error: null };
+}
+
+export async function publishStoryNow(id: string) {
+  return setStoryStatus(id, "published");
 }
 
 export async function toggleStoryFlag(id: string, field: "is_featured" | "is_pinned", value: boolean) {
