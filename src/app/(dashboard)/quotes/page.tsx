@@ -1,7 +1,10 @@
+import { Quote as QuoteIcon } from "lucide-react";
+
 import { QuoteFormDialog } from "@/app/(dashboard)/quotes/quote-form-dialog";
 import { QuoteRowActions } from "@/app/(dashboard)/quotes/quote-row-actions";
 import { Button } from "@/components/ui/button";
 import { ContentStatusBadge } from "@/components/content-status-badge";
+import { EmptyState } from "@/components/empty-state";
 import {
   Table,
   TableBody,
@@ -38,8 +41,12 @@ export default async function QuotesPage() {
           <TableBody>
             {quotes.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground">
-                  No quotes yet.
+                <TableCell colSpan={4}>
+                  <EmptyState
+                    icon={QuoteIcon}
+                    title="No quotes yet"
+                    description="Add your first quote to get started."
+                  />
                 </TableCell>
               </TableRow>
             ) : (

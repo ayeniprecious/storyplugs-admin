@@ -1,6 +1,9 @@
+import { Sparkles } from "lucide-react";
+
 import { ReflectionFormDialog } from "@/app/(dashboard)/reflections/reflection-form-dialog";
 import { ReflectionRowActions } from "@/app/(dashboard)/reflections/reflection-row-actions";
 import { ContentStatusBadge } from "@/components/content-status-badge";
+import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -40,8 +43,12 @@ export default async function ReflectionsPage() {
           <TableBody>
             {reflections.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">
-                  No reflections yet.
+                <TableCell colSpan={3}>
+                  <EmptyState
+                    icon={Sparkles}
+                    title="No reflections yet"
+                    description="Add your first reflection to get started."
+                  />
                 </TableCell>
               </TableRow>
             ) : (

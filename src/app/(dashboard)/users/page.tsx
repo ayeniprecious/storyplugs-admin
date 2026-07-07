@@ -1,5 +1,8 @@
+import { Users2 } from "lucide-react";
+
 import { UserRowActions } from "@/app/(dashboard)/users/user-row-actions";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/empty-state";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -94,8 +97,12 @@ export default async function UsersPage({
           <TableBody>
             {users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  No users found.
+                <TableCell colSpan={6}>
+                  <EmptyState
+                    icon={Users2}
+                    title="No users found"
+                    description="Try a different search term."
+                  />
                 </TableCell>
               </TableRow>
             ) : (

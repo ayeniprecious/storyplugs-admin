@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ThemeToggle } from "@/components/theme-toggle";
 import { signOut } from "@/lib/auth-actions";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +49,7 @@ export function AdminSidebarNav() {
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
               active
-                ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
                 : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             )}
           >
@@ -57,15 +58,18 @@ export function AdminSidebarNav() {
           </Link>
         );
       })}
-      <form action={signOut} className="mt-auto pt-3">
-        <button
-          type="submit"
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-        >
-          <LogOut className="size-4" />
-          Sign out
-        </button>
-      </form>
+      <div className="mt-auto flex flex-col gap-1 border-t border-sidebar-border pt-3">
+        <ThemeToggle />
+        <form action={signOut}>
+          <button
+            type="submit"
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          >
+            <LogOut className="size-4" />
+            Sign out
+          </button>
+        </form>
+      </div>
     </nav>
   );
 }

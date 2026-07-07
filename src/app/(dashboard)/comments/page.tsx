@@ -1,4 +1,7 @@
+import { MessageSquare } from "lucide-react";
+
 import { DeleteCommentButton } from "@/app/(dashboard)/comments/delete-comment-button";
+import { EmptyState } from "@/components/empty-state";
 import {
   Table,
   TableBody,
@@ -54,8 +57,12 @@ export default async function CommentsPage() {
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
-                  No comments yet.
+                <TableCell colSpan={5}>
+                  <EmptyState
+                    icon={MessageSquare}
+                    title="No comments yet"
+                    description="Comments will show up here once readers start posting."
+                  />
                 </TableCell>
               </TableRow>
             ) : (

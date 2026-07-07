@@ -1,6 +1,8 @@
+import { Flag } from "lucide-react";
 import Link from "next/link";
 
 import { ReportStatusSelect } from "@/app/(dashboard)/reports/report-status-select";
+import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -47,8 +49,12 @@ export default async function ReportsPage() {
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground">
-                  No reports.
+                <TableCell colSpan={4}>
+                  <EmptyState
+                    icon={Flag}
+                    title="No reports"
+                    description="Reported stories, comments, and users will show up here."
+                  />
                 </TableCell>
               </TableRow>
             ) : (

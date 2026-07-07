@@ -1,6 +1,8 @@
+import { BookOpen } from "lucide-react";
 import Link from "next/link";
 
 import { ContentStatusBadge } from "@/components/content-status-badge";
+import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -91,8 +93,12 @@ export default async function StoriesPage({
           <TableBody>
             {((stories as Story[] | null) ?? []).length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  No stories found.
+                <TableCell colSpan={6}>
+                  <EmptyState
+                    icon={BookOpen}
+                    title="No stories found"
+                    description="Try adjusting your filters, or create a new story."
+                  />
                 </TableCell>
               </TableRow>
             ) : (
