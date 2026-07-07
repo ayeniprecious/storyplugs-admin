@@ -115,7 +115,7 @@ export default async function UsersPage({
                     <TableCell>{user.profile?.gender ?? "not collected"}</TableCell>
                     <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <Badge variant={banned ? "destructive" : "secondary"}>
+                      <Badge variant={banned ? "warning" : "success"}>
                         {banned ? "Suspended" : "Active"}
                       </Badge>
                     </TableCell>

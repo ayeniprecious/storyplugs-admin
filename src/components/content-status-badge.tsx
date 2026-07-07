@@ -1,12 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import type { ContentStatus } from "@/lib/database.types";
 
-const STATUS_VARIANT: Record<ContentStatus, "default" | "secondary" | "destructive" | "outline"> = {
+const STATUS_VARIANT: Record<
+  ContentStatus,
+  "success" | "warning" | "info" | "outline"
+> = {
   draft: "outline",
-  pending_review: "secondary",
-  approved: "secondary",
-  published: "default",
-  archived: "destructive",
+  pending_review: "warning",
+  approved: "success",
+  published: "info",
+  archived: "outline",
 };
 
 const STATUS_LABEL: Record<ContentStatus, string> = {
