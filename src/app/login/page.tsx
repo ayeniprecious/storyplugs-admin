@@ -25,7 +25,7 @@ export default function LoginPage() {
         />
         <div className="relative flex items-center gap-2.5">
           <LogoMark className="size-9" />
-          <span className="text-lg font-semibold">StoryPlugs</span>
+          <span className="font-brand text-lg font-semibold">StoryPlugs</span>
         </div>
         <div className="relative max-w-sm">
           <p className="text-2xl font-medium text-balance">
@@ -41,7 +41,7 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           <div className="mb-8 flex items-center gap-2.5 md:hidden">
             <LogoMark className="size-8" />
-            <span className="text-lg font-semibold">StoryPlugs</span>
+            <span className="font-brand text-lg font-semibold">StoryPlugs</span>
           </div>
           <h1 className="text-xl font-semibold">Admin sign in</h1>
           <p className="mt-1 text-sm text-muted-foreground">

@@ -1,7 +1,7 @@
 import {
+  Bookmark,
   BookOpen,
   Flag,
-  Heart,
   MessageSquare,
   TrendingUp,
   Users2,
@@ -15,7 +15,7 @@ import { createClient } from "@/lib/supabase/server";
 async function getCounts() {
   const supabase = await createClient();
 
-  const [users, stories, publishedStories, reads, likes, comments, pendingReports] =
+  const [users, stories, publishedStories, reads, favorites, comments, pendingReports] =
     await Promise.all([
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("stories").select("*", { count: "exact", head: true }),
@@ -37,7 +37,7 @@ async function getCounts() {
     stories: stories.count ?? 0,
     publishedStories: publishedStories.count ?? 0,
     reads: reads.count ?? 0,
-    likes: likes.count ?? 0,
+    favorites: favorites.count ?? 0,
     comments: comments.count ?? 0,
     pendingReports: pendingReports.count ?? 0,
   };
@@ -92,7 +92,7 @@ export default async function DashboardPage() {
           icon={BookOpen}
         />
         <StatCard label="Reads" value={counts.reads} icon={TrendingUp} />
-        <StatCard label="Likes" value={counts.likes} icon={Heart} />
+        <StatCard label="Favorites" value={counts.favorites} icon={Bookmark} />
         <StatCard label="Comments" value={counts.comments} icon={MessageSquare} />
         <StatCard
           label="Pending Reports"

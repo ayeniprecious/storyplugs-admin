@@ -14,7 +14,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="flex items-center gap-2.5 border-b border-sidebar-border px-4 py-4">
           <LogoMark />
           <div className="min-w-0">
-            <p className="text-sm font-semibold">StoryPlugs</p>
+            <p className="font-brand text-sm font-semibold">StoryPlugs</p>
             <p className="truncate text-xs text-sidebar-foreground/60">{email}</p>
           </div>
         </div>
@@ -30,7 +30,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <div className="flex items-center gap-2.5 border-b border-sidebar-border px-4 py-4">
                 <LogoMark />
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold">StoryPlugs</p>
+                  <p className="font-brand text-sm font-semibold">StoryPlugs</p>
                   <p className="truncate text-xs text-sidebar-foreground/60">{email}</p>
                 </div>
               </div>
@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </Sheet>
           <div className="flex items-center gap-2">
             <LogoMark className="size-7" />
-            <p className="text-sm font-semibold">StoryPlugs</p>
+            <p className="font-brand text-sm font-semibold">StoryPlugs</p>
           </div>
           <p className="text-xs text-muted-foreground">{admin.role}</p>
         </header>
