@@ -1,12 +1,12 @@
 "use client";
 
-import { BookHeart } from "lucide-react";
 import { useActionState } from "react";
 
 import { signIn } from "@/app/login/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LogoMark } from "@/components/logo-mark";
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(signIn, { error: null });
@@ -24,7 +24,7 @@ export default function LoginPage() {
           }}
         />
         <div className="relative flex items-center gap-2.5">
-          <BookHeart className="size-6" />
+          <LogoMark className="size-9" />
           <span className="text-lg font-semibold">StoryPlugs</span>
         </div>
         <div className="relative max-w-sm">
@@ -40,9 +40,7 @@ export default function LoginPage() {
       <div className="flex flex-1 flex-col items-center justify-center p-6">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex items-center gap-2.5 md:hidden">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <BookHeart className="size-4" />
-            </div>
+            <LogoMark className="size-8" />
             <span className="text-lg font-semibold">StoryPlugs</span>
           </div>
           <h1 className="text-xl font-semibold">Admin sign in</h1>

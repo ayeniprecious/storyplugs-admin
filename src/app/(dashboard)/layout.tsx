@@ -38,7 +38,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-2">
-            <LogoMark className="size-7" iconClassName="size-3.5" />
+            <LogoMark className="size-7" />
             <p className="text-sm font-semibold">StoryPlugs</p>
           </div>
           <p className="text-xs text-muted-foreground">{admin.role}</p>
