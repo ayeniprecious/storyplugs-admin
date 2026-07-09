@@ -46,3 +46,32 @@ export async function sendNotification(formData: FormData) {
   revalidatePath("/notifications");
   return { error: null, recipientCount: result.recipientCount, pushSent: result.pushSent };
 }
+
+export async function updateNotification(id: string, formData: FormData) {
+  await requireAdmin();
+
+  const title = String(formData.get("title") ?? "").trim();
+  const body = String(formData.get("body") ?? "").trim();
+  const storyId = String(formData.get("story_id") ?? "").trim() || null;
+
+  if (!title || !body) return { error: "Title and body are required." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("notifications")
+    .update({ title, body, story_id: storyId })
+    .eq("id", id);
+  if (error) return { error: error.message };
+
+  revalidatePath("/notifications");
+  return { error: null };
+}
+
+export async function deleteNotification(id: string) {
+  await requireAdmin();
+  const supabase = await createClient();
+  const { error } = await supabase.from("notifications").delete().eq("id", id);
+  if (error) return { error: error.message };
+  revalidatePath("/notifications");
+  return { error: null };
+}

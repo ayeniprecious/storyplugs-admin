@@ -1,4 +1,7 @@
 import { NotificationComposeForm } from "@/app/(dashboard)/notifications/notification-compose-form";
+import { NotificationEditDialog } from "@/app/(dashboard)/notifications/notification-edit-dialog";
+import { NotificationRowActions } from "@/app/(dashboard)/notifications/notification-row-actions";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -36,16 +39,14 @@ export default async function NotificationsPage() {
     supabase.from("stories").select("id, title").eq("status", "published").order("title"),
     supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(50),
   ]);
+  const storyOptions = (stories as Pick<Story, "id" | "title">[] | null) ?? [];
 
   return (
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="mb-6 text-2xl font-semibold">Notifications</h1>
         <div className="max-w-xl">
-          <NotificationComposeForm
-            users={users}
-            stories={(stories as Pick<Story, "id" | "title">[] | null) ?? []}
-          />
+          <NotificationComposeForm users={users} stories={storyOptions} />
         </div>
       </div>
 
@@ -59,12 +60,13 @@ export default async function NotificationsPage() {
                 <TableHead>Message</TableHead>
                 <TableHead>Target</TableHead>
                 <TableHead>Sent</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {((notifications as AppNotification[] | null) ?? []).length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No notifications sent yet.
                   </TableCell>
                 </TableRow>
@@ -75,6 +77,18 @@ export default async function NotificationsPage() {
                     <TableCell className="max-w-sm truncate">{n.body}</TableCell>
                     <TableCell>{n.target_type}</TableCell>
                     <TableCell>{new Date(n.created_at).toLocaleString()}</TableCell>
+                    <TableCell className="flex justify-end gap-2">
+                      <NotificationEditDialog
+                        notification={n}
+                        stories={storyOptions}
+                        trigger={
+                          <Button variant="outline" size="sm">
+                            Edit
+                          </Button>
+                        }
+                      />
+                      <NotificationRowActions id={n.id} />
+                    </TableCell>
                   </TableRow>
                 ))
               )}
