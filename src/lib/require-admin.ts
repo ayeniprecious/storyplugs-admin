@@ -1,5 +1,6 @@
 import "server-only";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import type { AdminRow } from "@/lib/database.types";
@@ -11,9 +12,23 @@ import { createClient } from "@/lib/supabase/server";
 export async function requireAdmin(): Promise<{ userId: string; email: string | null; admin: AdminRow }> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // proxy.ts already validated the session for this request via a getUser() round trip to
+  // Supabase Auth and forwarded the result -- reuse it instead of paying for a second one.
+  // Falls back to a live check if the header is missing (e.g. middleware didn't run).
+  const headerStore = await headers();
+  const verifiedUserId = headerStore.get("x-verified-user-id");
+  const verifiedUserEmail = headerStore.get("x-verified-user-email");
+
+  let user: { id: string; email: string | null } | null = verifiedUserId
+    ? { id: verifiedUserId, email: verifiedUserEmail || null }
+    : null;
+
+  if (!user) {
+    const {
+      data: { user: freshUser },
+    } = await supabase.auth.getUser();
+    user = freshUser ? { id: freshUser.id, email: freshUser.email ?? null } : null;
+  }
 
   if (!user) {
     redirect("/login");

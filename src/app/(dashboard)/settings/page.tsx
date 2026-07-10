@@ -17,7 +17,12 @@ export default async function SettingsPage() {
     <div className="flex max-w-2xl flex-col gap-6">
       <h1 className="text-2xl font-semibold">Settings</h1>
       <LogoUploader initialUrl={logoUrl} />
-      <SettingsForm appName={appName} privacyPolicy={privacyPolicy} termsOfService={termsOfService} />
+      <SettingsForm
+        key={`${appName}|${privacyPolicy}|${termsOfService}`}
+        appName={appName}
+        privacyPolicy={privacyPolicy}
+        termsOfService={termsOfService}
+      />
     </div>
   );
 }

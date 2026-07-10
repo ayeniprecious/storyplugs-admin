@@ -57,11 +57,15 @@ export async function updateNotification(id: string, formData: FormData) {
   if (!title || !body) return { error: "Title and body are required." };
 
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("notifications")
     .update({ title, body, story_id: storyId })
-    .eq("id", id);
+    .eq("id", id)
+    .select("id");
   if (error) return { error: error.message };
+  if (!data || data.length === 0) {
+    return { error: "Update was blocked — no matching notification or insufficient permissions." };
+  }
 
   revalidatePath("/notifications");
   return { error: null };
@@ -70,8 +74,11 @@ export async function updateNotification(id: string, formData: FormData) {
 export async function deleteNotification(id: string) {
   await requireAdmin();
   const supabase = await createClient();
-  const { error } = await supabase.from("notifications").delete().eq("id", id);
+  const { data, error } = await supabase.from("notifications").delete().eq("id", id).select("id");
   if (error) return { error: error.message };
+  if (!data || data.length === 0) {
+    return { error: "Delete was blocked — no matching notification or insufficient permissions." };
+  }
   revalidatePath("/notifications");
   return { error: null };
 }

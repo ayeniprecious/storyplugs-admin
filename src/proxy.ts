@@ -41,6 +41,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // getUser() above already made the (slow) round trip to Supabase Auth to validate the
+  // session for this exact request -- forward the result via a header so requireAdmin()
+  // doesn't have to pay for a second one on every page/action.
+  if (user) {
+    request.headers.set("x-verified-user-id", user.id);
+    request.headers.set("x-verified-user-email", user.email ?? "");
+    response = NextResponse.next({ request });
+  }
+
   return response;
 }
 
