@@ -91,13 +91,14 @@ export default async function UsersPage({
               <TableHead>Gender</TableHead>
               <TableHead>Joined</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Premium</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6}>
+                <TableCell colSpan={7}>
                   <EmptyState
                     icon={Users2}
                     title="No users found"
@@ -119,8 +120,15 @@ export default async function UsersPage({
                         {banned ? "Suspended" : "Active"}
                       </Badge>
                     </TableCell>
+                    <TableCell>
+                      {user.profile?.is_premium ? <Badge variant="success">Premium</Badge> : "—"}
+                    </TableCell>
                     <TableCell className="text-right">
-                      <UserRowActions userId={user.id} banned={banned} />
+                      <UserRowActions
+                        userId={user.id}
+                        banned={banned}
+                        isPremium={user.profile?.is_premium ?? false}
+                      />
                     </TableCell>
                   </TableRow>
                 );

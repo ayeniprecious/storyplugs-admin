@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import { deleteUser, suspendUser, unbanUser } from "@/app/(dashboard)/users/actions";
+import { deleteUser, setPremium, suspendUser, unbanUser } from "@/app/(dashboard)/users/actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +17,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export function UserRowActions({ userId, banned }: { userId: string; banned: boolean }) {
+export function UserRowActions({
+  userId,
+  banned,
+  isPremium,
+}: {
+  userId: string;
+  banned: boolean;
+  isPremium: boolean;
+}) {
   const [isPending, startTransition] = useTransition();
   const [openDialog, setOpenDialog] = useState<"suspend" | "delete" | null>(null);
 
@@ -30,6 +38,14 @@ export function UserRowActions({ userId, banned }: { userId: string; banned: boo
         toast.success(banned ? "User unbanned." : "User suspended.");
         setOpenDialog(null);
       }
+    });
+  }
+
+  function runPremiumToggle() {
+    startTransition(async () => {
+      const result = await setPremium(userId, !isPremium);
+      if (result.error) toast.error(result.error);
+      else toast.success(isPremium ? "Premium removed." : "Premium granted.");
     });
   }
 
@@ -47,6 +63,10 @@ export function UserRowActions({ userId, banned }: { userId: string; banned: boo
 
   return (
     <div className="flex justify-end gap-2">
+      <Button variant={isPremium ? "default" : "outline"} size="sm" disabled={isPending} onClick={runPremiumToggle}>
+        {isPremium ? "Remove Premium" : "Grant Premium"}
+      </Button>
+
       <AlertDialog
         open={openDialog === "suspend"}
         onOpenChange={(open) => setOpenDialog(open ? "suspend" : null)}

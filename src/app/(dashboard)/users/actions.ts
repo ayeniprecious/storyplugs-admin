@@ -36,3 +36,12 @@ export async function deleteUser(userId: string) {
   revalidatePath("/users");
   return { error: null };
 }
+
+export async function setPremium(userId: string, isPremium: boolean) {
+  await requireAdmin();
+  const admin = createAdminClient();
+  const { error } = await admin.from("profiles").update({ is_premium: isPremium }).eq("id", userId);
+  if (error) return { error: error.message };
+  revalidatePath("/users");
+  return { error: null };
+}

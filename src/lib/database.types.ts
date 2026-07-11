@@ -16,6 +16,7 @@ export interface Profile {
   notification_types: string[];
   push_token: string | null;
   gender: string | null;
+  is_premium: boolean;
   created_at: string;
   updated_at: string;
 }
