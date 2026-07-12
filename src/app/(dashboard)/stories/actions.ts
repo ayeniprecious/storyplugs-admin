@@ -97,7 +97,11 @@ export async function publishStoryNow(id: string) {
   return setStoryStatus(id, "published");
 }
 
-export async function toggleStoryFlag(id: string, field: "is_featured" | "is_pinned", value: boolean) {
+export async function toggleStoryFlag(
+  id: string,
+  field: "is_featured" | "is_pinned" | "is_mature",
+  value: boolean
+) {
   await requireAdmin();
   const supabase = await createClient();
   const { error } = await supabase.from("stories").update({ [field]: value }).eq("id", id);

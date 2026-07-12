@@ -72,7 +72,7 @@ export function StoryStatusPanel({ story }: { story: Story }) {
     });
   }
 
-  function runToggle(field: "is_featured" | "is_pinned", value: boolean) {
+  function runToggle(field: "is_featured" | "is_pinned" | "is_mature", value: boolean) {
     startTransition(async () => {
       const result = await toggleStoryFlag(story.id, field, value);
       if (result.error) toast.error(result.error);
@@ -152,6 +152,15 @@ export function StoryStatusPanel({ story }: { story: Story }) {
           onCheckedChange={(value) => runToggle("is_pinned", value)}
         />
         <Label htmlFor="is_pinned">Pinned</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <Switch
+          id="is_mature"
+          checked={story.is_mature}
+          disabled={isPending}
+          onCheckedChange={(value) => runToggle("is_mature", value)}
+        />
+        <Label htmlFor="is_mature">Mature (18+)</Label>
       </div>
 
       <AlertDialog>

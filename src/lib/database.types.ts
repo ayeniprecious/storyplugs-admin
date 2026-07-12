@@ -49,6 +49,7 @@ export interface Story {
   status: ContentStatus;
   is_featured: boolean;
   is_pinned: boolean;
+  is_mature: boolean;
   generated_by_admin_id: string | null;
   approved_by_admin_id: string | null;
   published_at: string | null;
