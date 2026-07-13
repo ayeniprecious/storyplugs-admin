@@ -14,16 +14,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { Category, Story } from "@/lib/database.types";
+import type { Category, Story, Tag } from "@/lib/database.types";
 
 export function StoryForm({
   story,
   categories,
+  tags,
+  initialTags,
   formAction,
   submitLabel,
 }: {
   story?: Story;
   categories: Category[];
+  tags: Tag[];
+  initialTags: string[];
   formAction: (state: StoryFormState, formData: FormData) => Promise<StoryFormState>;
   submitLabel: string;
 }) {
@@ -93,6 +97,26 @@ export function StoryForm({
           rows={2}
           defaultValue={story?.daily_lesson ?? ""}
         />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="tags">Tags</Label>
+        <Input
+          id="tags"
+          name="tags"
+          list="tag-suggestions"
+          placeholder="e.g. gifting, helpful, mercy, loyalty, favour"
+          defaultValue={initialTags.join(", ")}
+        />
+        <datalist id="tag-suggestions">
+          {tags.map((tag) => (
+            <option key={tag.slug} value={tag.name} />
+          ))}
+        </datalist>
+        <p className="text-xs text-muted-foreground">
+          Comma-separated. Finer-grained than category — used to sharpen mood-based picks and
+          preference matching. Start typing to see existing tags, or add new ones freely.
+        </p>
       </div>
 
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}

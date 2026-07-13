@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { requireAdmin } from "@/lib/require-admin";
 import type { ContentStatus } from "@/lib/database.types";
+import { slugify } from "@/lib/slugify";
 import { createClient } from "@/lib/supabase/server";
 
 function storyFieldsFromForm(formData: FormData) {
@@ -17,6 +18,51 @@ function storyFieldsFromForm(formData: FormData) {
     reflection_question: String(formData.get("reflection_question") ?? "").trim() || null,
     daily_lesson: String(formData.get("daily_lesson") ?? "").trim() || null,
   };
+}
+
+// "gifting, helpful, mercy" -> [{slug: "gifting", name: "gifting"}, ...],
+// case-insensitively deduped by slug so "Hope" and "hope" collapse to one tag.
+function parseTagRows(raw: string) {
+  const seenSlugs = new Set<string>();
+  const rows: { slug: string; name: string }[] = [];
+  for (const part of raw.split(",")) {
+    const name = part.trim();
+    if (!name) continue;
+    const slug = slugify(name);
+    if (!slug || seenSlugs.has(slug)) continue;
+    seenSlugs.add(slug);
+    rows.push({ slug, name });
+  }
+  return rows;
+}
+
+// Upserts any new tag names into the canonical `tags` table (first writer
+// wins the display name for a given slug), then replaces this story's
+// story_tags rows wholesale -- same delete-then-reinsert approach as curated
+// sections' replaceSectionStories, simpler than diffing the two sets.
+async function syncStoryTags(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  storyId: string,
+  rawTags: string
+) {
+  const rows = parseTagRows(rawTags);
+
+  if (rows.length > 0) {
+    const { error } = await supabase.from("tags").upsert(rows, { onConflict: "slug", ignoreDuplicates: true });
+    if (error) return error.message;
+  }
+
+  const { error: deleteError } = await supabase.from("story_tags").delete().eq("story_id", storyId);
+  if (deleteError) return deleteError.message;
+
+  if (rows.length > 0) {
+    const { error: insertError } = await supabase
+      .from("story_tags")
+      .insert(rows.map((row) => ({ story_id: storyId, tag_slug: row.slug })));
+    if (insertError) return insertError.message;
+  }
+
+  return null;
 }
 
 export type StoryFormState = { error: string | null };
@@ -48,6 +94,10 @@ export async function createStory(formData: FormData) {
     .single();
 
   if (error || !data) return { error: error?.message ?? "Failed to create story." };
+
+  const tagsError = await syncStoryTags(supabase, data.id, String(formData.get("tags") ?? ""));
+  if (tagsError) return { error: tagsError };
+
   revalidatePath("/stories");
   redirect(`/stories/${data.id}`);
 }
@@ -62,6 +112,10 @@ export async function updateStory(id: string, formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.from("stories").update(fields).eq("id", id);
   if (error) return { error: error.message };
+
+  const tagsError = await syncStoryTags(supabase, id, String(formData.get("tags") ?? ""));
+  if (tagsError) return { error: tagsError };
+
   revalidatePath("/stories");
   revalidatePath(`/stories/${id}`);
   return { error: null };

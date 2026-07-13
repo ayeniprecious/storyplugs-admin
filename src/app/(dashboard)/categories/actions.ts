@@ -3,15 +3,8 @@
 import { revalidatePath } from "next/cache";
 
 import { requireAdmin } from "@/lib/require-admin";
+import { slugify } from "@/lib/slugify";
 import { createClient } from "@/lib/supabase/server";
-
-function slugify(name: string) {
-  return name
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-}
 
 export async function createCategory(formData: FormData) {
   await requireAdmin();

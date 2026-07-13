@@ -36,6 +36,12 @@ export interface Category {
   created_at: string;
 }
 
+export interface Tag {
+  slug: string;
+  name: string;
+  created_at: string;
+}
+
 export interface Story {
   id: string;
   title: string;
