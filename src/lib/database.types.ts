@@ -137,3 +137,25 @@ export interface AppSetting {
   value: unknown;
   updated_at: string;
 }
+
+export type CuratedSectionPage = "home" | "search";
+export type CuratedSectionStyle = "poster" | "row" | "ranked";
+
+export interface CuratedSection {
+  id: string;
+  title: string;
+  target_page: CuratedSectionPage;
+  anchor: string;
+  display_style: CuratedSectionStyle;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CuratedSectionStory {
+  id: string;
+  section_id: string;
+  story_id: string;
+  sort_order: number;
+}
