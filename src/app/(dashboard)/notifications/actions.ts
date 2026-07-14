@@ -13,6 +13,7 @@ export async function sendNotification(formData: FormData) {
   const target = String(formData.get("target") ?? "all");
   const storyId = String(formData.get("story_id") ?? "").trim() || undefined;
   const targetUserIds = formData.getAll("target_user_ids").map(String);
+  const storyIds = formData.getAll("story_ids").map(String);
 
   if (!title || !body) return { error: "Title and body are required." };
   if (target === "selected" && targetUserIds.length === 0) {
@@ -37,6 +38,7 @@ export async function sendNotification(formData: FormData) {
       target,
       targetUserIds: target === "selected" ? targetUserIds : undefined,
       storyId,
+      storyIds: storyIds.length > 0 ? storyIds : undefined,
     }),
   });
 

@@ -36,10 +36,10 @@ export default async function NotificationsPage() {
 
   const [users, { data: stories }, { data: notifications }] = await Promise.all([
     getUserOptions(),
-    supabase.from("stories").select("id, title").eq("status", "published").order("title"),
+    supabase.from("stories").select("id, title, category").eq("status", "published").order("title"),
     supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(50),
   ]);
-  const storyOptions = (stories as Pick<Story, "id" | "title">[] | null) ?? [];
+  const storyOptions = (stories as Pick<Story, "id" | "title" | "category">[] | null) ?? [];
 
   return (
     <div className="flex flex-col gap-8">
