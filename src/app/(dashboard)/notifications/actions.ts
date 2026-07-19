@@ -46,7 +46,12 @@ export async function sendNotification(formData: FormData) {
   if (!res.ok) return { error: result.error ?? "Failed to send notification." };
 
   revalidatePath("/notifications");
-  return { error: null, recipientCount: result.recipientCount, pushSent: result.pushSent };
+  return {
+    error: null,
+    recipientCount: result.recipientCount,
+    pushSent: result.pushSent,
+    pushErrors: result.pushErrors,
+  };
 }
 
 export async function updateNotification(id: string, formData: FormData) {

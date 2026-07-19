@@ -91,6 +91,12 @@ export function NotificationComposeForm({
         toast.error(result.error);
       } else {
         toast.success(`Sent to ${result.recipientCount} user(s), ${result.pushSent} push notification(s).`);
+        if (result.pushErrors && result.pushErrors.length > 0) {
+          console.error("Push delivery errors:", result.pushErrors);
+          toast.error(
+            `${result.pushErrors.length} push(es) failed to deliver — see browser console for details.`
+          );
+        }
         formRef.current?.reset();
         setSelectedIds([]);
         setSelectedStoryIds([]);
