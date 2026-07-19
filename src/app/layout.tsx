@@ -24,6 +24,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "StoryPlugs Admin",
   description: "Admin dashboard for StoryPlugs",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
