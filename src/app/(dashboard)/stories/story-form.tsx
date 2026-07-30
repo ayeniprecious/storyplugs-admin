@@ -98,7 +98,7 @@ export function StoryForm({
             name="cover_color"
             type="color"
             className="h-9 w-full p-1"
-            defaultValue={story?.cover_color ?? "#C01918"}
+            defaultValue={story?.cover_color ?? "#5C0F0F"}
           />
           <p className="text-xs text-muted-foreground">
             Used as the book-cover background on category rows when there&apos;s no image.
