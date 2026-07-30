@@ -58,6 +58,9 @@ export interface Story {
   is_featured: boolean;
   is_pinned: boolean;
   is_mature: boolean;
+  // 20260830000000_short_stories_rebuild.sql -- drives Story of the Day
+  // picking (mobile only picks from these) and the Home Short Stories row.
+  is_short_story: boolean;
   generated_by_admin_id: string | null;
   approved_by_admin_id: string | null;
   published_at: string | null;

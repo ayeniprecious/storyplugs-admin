@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import type { StoryFormState } from "@/app/(dashboard)/stories/actions";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { Category, Story, Tag } from "@/lib/database.types";
+
+const SHORT_STORY_DEFAULT_CATEGORY = "kindness";
 
 export function StoryForm({
   story,
@@ -34,6 +36,18 @@ export function StoryForm({
   const [state, action, pending] = useActionState<StoryFormState, FormData>(formAction, {
     error: null,
   });
+  const [isShortStory, setIsShortStory] = useState(story?.is_short_story ?? false);
+  const [category, setCategory] = useState(story?.category ?? categories[0]?.slug ?? "");
+  // Only new stories get the auto-default -- editing an existing story
+  // should never silently change its category out from under an admin.
+  const [categoryTouched, setCategoryTouched] = useState(!!story);
+
+  function handleShortStoryChange(checked: boolean) {
+    setIsShortStory(checked);
+    if (checked && !categoryTouched && categories.some((c) => c.slug === SHORT_STORY_DEFAULT_CATEGORY)) {
+      setCategory(SHORT_STORY_DEFAULT_CATEGORY);
+    }
+  }
 
   return (
     <form action={action} className="flex flex-col gap-4">
@@ -56,16 +70,43 @@ export function StoryForm({
         </p>
       </div>
 
+      <div className="flex items-center gap-2 rounded-md border p-3">
+        <input
+          id="is_short_story"
+          name="is_short_story"
+          type="checkbox"
+          checked={isShortStory}
+          onChange={(e) => handleShortStoryChange(e.target.checked)}
+          className="h-4 w-4 rounded border-input"
+        />
+        <div className="flex flex-col gap-0.5">
+          <Label htmlFor="is_short_story">Short Story</Label>
+          <p className="text-xs text-muted-foreground">
+            Shows with a real cover image (below) instead of a color card, appears in Home&apos;s
+            Short Stories row, and is eligible to be picked as Story of the Day. Defaults new
+            stories to the Kindness category -- change it below if this one belongs elsewhere.
+          </p>
+        </div>
+      </div>
+
       <div className="flex flex-col gap-2">
         <Label htmlFor="category">Category</Label>
-        <Select name="category" defaultValue={story?.category ?? categories[0]?.slug}>
+        <Select
+          name="category"
+          value={category}
+          onValueChange={(value) => {
+            if (!value) return;
+            setCategory(value);
+            setCategoryTouched(true);
+          }}
+        >
           <SelectTrigger id="category" className="w-full">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
           <SelectContent>
-            {categories.map((category) => (
-              <SelectItem key={category.slug} value={category.slug}>
-                {category.name}
+            {categories.map((c) => (
+              <SelectItem key={c.slug} value={c.slug}>
+                {c.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -84,8 +125,18 @@ export function StoryForm({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="image_url">Image URL</Label>
-          <Input id="image_url" name="image_url" defaultValue={story?.image_url ?? ""} />
+          <Label htmlFor="image_url">Image URL{isShortStory && " (required)"}</Label>
+          <Input
+            id="image_url"
+            name="image_url"
+            required={isShortStory}
+            defaultValue={story?.image_url ?? ""}
+          />
+          {isShortStory && (
+            <p className="text-xs text-muted-foreground">
+              Rendered as this short story&apos;s cover, in place of the color card.
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="audio_url">Audio URL</Label>

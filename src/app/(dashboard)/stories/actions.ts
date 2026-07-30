@@ -19,6 +19,7 @@ function storyFieldsFromForm(formData: FormData) {
     cover_color: String(formData.get("cover_color") ?? "").trim() || null,
     reflection_question: String(formData.get("reflection_question") ?? "").trim() || null,
     daily_lesson: String(formData.get("daily_lesson") ?? "").trim() || null,
+    is_short_story: formData.get("is_short_story") === "on",
   };
 }
 
