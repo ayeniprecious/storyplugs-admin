@@ -4,6 +4,7 @@ import type { CuratedSectionPage, CuratedSectionStyle } from "@/lib/database.typ
 // boundaries in storyplugs-mobile's src/app/(app)/index.tsx and search.tsx.
 export const ANCHORS: Record<CuratedSectionPage, { value: string; label: string }[]> = {
   home: [
+    { value: "home_after_reflection", label: 'After "Reflection of the Day"' },
     { value: "home_after_continue_reading", label: 'After "Continue Reading"' },
     { value: "home_after_recommended", label: 'After "Recommended for You"' },
     { value: "home_before_browse_by_category", label: 'Before "Browse by Category"' },
@@ -36,6 +37,11 @@ export const STYLES: { value: CuratedSectionStyle; label: string; description: s
     value: "ranked",
     label: "Ranked List",
     description: 'Numbered vertical list with tags, like "Recommended for You" (max 5 shown).',
+  },
+  {
+    value: "short",
+    label: "Short Story Cards",
+    description: "Horizontal scroll of wide, low cards with a read-time badge -- built for quick reads.",
   },
 ];
 

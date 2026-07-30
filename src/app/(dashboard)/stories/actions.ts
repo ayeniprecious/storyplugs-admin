@@ -11,10 +11,12 @@ import { createClient } from "@/lib/supabase/server";
 function storyFieldsFromForm(formData: FormData) {
   return {
     title: String(formData.get("title") ?? "").trim(),
+    author_name: String(formData.get("author_name") ?? "").trim() || null,
     body: String(formData.get("body") ?? "").trim(),
     category: String(formData.get("category") ?? ""),
     image_url: String(formData.get("image_url") ?? "").trim() || null,
     audio_url: String(formData.get("audio_url") ?? "").trim() || null,
+    cover_color: String(formData.get("cover_color") ?? "").trim() || null,
     reflection_question: String(formData.get("reflection_question") ?? "").trim() || null,
     daily_lesson: String(formData.get("daily_lesson") ?? "").trim() || null,
   };

@@ -45,9 +45,11 @@ export interface Tag {
 export interface Story {
   id: string;
   title: string;
+  author_name: string | null;
   body: string;
   image_url: string | null;
   audio_url: string | null;
+  cover_color: string | null;
   category: string;
   reflection_question: string | null;
   daily_lesson: string | null;
@@ -145,7 +147,7 @@ export interface AppSetting {
 }
 
 export type CuratedSectionPage = "home" | "search";
-export type CuratedSectionStyle = "poster" | "row" | "ranked";
+export type CuratedSectionStyle = "poster" | "row" | "ranked" | "short";
 
 export interface CuratedSection {
   id: string;
@@ -164,4 +166,23 @@ export interface CuratedSectionStory {
   section_id: string;
   story_id: string;
   sort_order: number;
+}
+
+// 20260820000000_story_submissions.sql — premium users' own submitted stories,
+// reviewed independently of the main admin-authored stories table.
+export type StorySubmissionStatus = "pending" | "approved" | "rejected";
+
+export interface StorySubmission {
+  id: string;
+  user_id: string;
+  author_name: string;
+  title: string;
+  body: string;
+  category: string | null;
+  status: StorySubmissionStatus;
+  is_visible: boolean;
+  admin_note: string | null;
+  reviewed_by_admin_id: string | null;
+  reviewed_at: string | null;
+  created_at: string;
 }

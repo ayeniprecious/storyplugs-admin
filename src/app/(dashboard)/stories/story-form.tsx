@@ -43,6 +43,20 @@ export function StoryForm({
       </div>
 
       <div className="flex flex-col gap-2">
+        <Label htmlFor="author_name">Author</Label>
+        <Input
+          id="author_name"
+          name="author_name"
+          placeholder="e.g. Maya Alvarez"
+          defaultValue={story?.author_name ?? "StoryPlugs"}
+        />
+        <p className="text-xs text-muted-foreground">
+          The writer's byline, shown on the story&apos;s book-cover card. Defaults to
+          StoryPlugs -- change it if this story belongs to a specific writer.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-2">
         <Label htmlFor="category">Category</Label>
         <Select name="category" defaultValue={story?.category ?? categories[0]?.slug}>
           <SelectTrigger id="category" className="w-full">
@@ -68,7 +82,7 @@ export function StoryForm({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-2">
           <Label htmlFor="image_url">Image URL</Label>
           <Input id="image_url" name="image_url" defaultValue={story?.image_url ?? ""} />
@@ -76,6 +90,19 @@ export function StoryForm({
         <div className="flex flex-col gap-2">
           <Label htmlFor="audio_url">Audio URL</Label>
           <Input id="audio_url" name="audio_url" defaultValue={story?.audio_url ?? ""} />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="cover_color">Cover color</Label>
+          <Input
+            id="cover_color"
+            name="cover_color"
+            type="color"
+            className="h-9 w-full p-1"
+            defaultValue={story?.cover_color ?? "#C01918"}
+          />
+          <p className="text-xs text-muted-foreground">
+            Used as the book-cover background on category rows when there&apos;s no image.
+          </p>
         </div>
       </div>
 
