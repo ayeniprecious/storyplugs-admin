@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 
 import type { StoryFormState } from "@/app/(dashboard)/stories/actions";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import type { Category, Story, Tag } from "@/lib/database.types";
 
 const SHORT_STORY_DEFAULT_CATEGORY = "kindness";
@@ -41,11 +42,32 @@ export function StoryForm({
   // Only new stories get the auto-default -- editing an existing story
   // should never silently change its category out from under an admin.
   const [categoryTouched, setCategoryTouched] = useState(!!story);
+  const [imageUrl, setImageUrl] = useState(story?.image_url ?? "");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const imageFileInputRef = useRef<HTMLInputElement>(null);
 
   function handleShortStoryChange(checked: boolean) {
     setIsShortStory(checked);
     if (checked && !categoryTouched && categories.some((c) => c.slug === SHORT_STORY_DEFAULT_CATEGORY)) {
       setCategory(SHORT_STORY_DEFAULT_CATEGORY);
+    }
+  }
+
+  async function handleImageFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    // Reset the input so picking the same file again still fires onChange.
+    e.target.value = "";
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError(null);
+    try {
+      setImageUrl(await uploadImageToCloudinary(file));
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Image upload failed.");
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -126,15 +148,37 @@ export function StoryForm({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-2">
           <Label htmlFor="image_url">Image URL{isShortStory && " (required)"}</Label>
-          <Input
-            id="image_url"
-            name="image_url"
-            required={isShortStory}
-            defaultValue={story?.image_url ?? ""}
-          />
+          <div className="flex gap-2">
+            <Input
+              id="image_url"
+              name="image_url"
+              required={isShortStory}
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="https://... or upload a file"
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={uploading}
+              onClick={() => imageFileInputRef.current?.click()}
+            >
+              {uploading ? "Uploading..." : "Upload"}
+            </Button>
+            <input
+              ref={imageFileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageFileChange}
+            />
+          </div>
+          {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
           {isShortStory && (
             <p className="text-xs text-muted-foreground">
-              Rendered as this short story&apos;s cover, in place of the color card.
+              Rendered as this short story&apos;s cover, in place of the color card. Paste a URL, or
+              click Upload to send a picture to Cloudinary and fill this in automatically.
             </p>
           )}
         </div>
